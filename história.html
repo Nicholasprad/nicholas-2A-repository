@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>História Interativa</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: black; /* Fundo da página preto */
+            text-align: center;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            color: white; /* Texto branco */
+        }
+        .tarja {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 10%; /* Largura das tarjas */
+            background-color: white;
+        }
+        .tarja.esquerda {
+            left: 0;
+        }
+        .tarja.direita {
+            right: 0;
+        }
+        #historia {
+            margin: 20px;
+            padding: 20px;
+            background-color: #222; /* Fundo do texto escuro */
+            color: white;
+            font-size: 24px;
+            max-width: 600px; /* Limita a largura do texto */
+            border-radius: 10px;
+            position: relative;
+            z-index: 1; /* Mantém o texto acima das tarjas */
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        let etapa = 0;
+        const historias = [
+            {
+                texto: "Você acorda em uma floresta densa, cercado por árvores altas. Um caminho se divide à sua frente. Para onde você deseja ir?",
+                opcoes: ["Para a esquerda", "Para a direita"]
+            },
+            {
+                texto: "Você segue o caminho da esquerda e encontra um lago cristalino. A água brilha ao sol. O que você faz?",
+                opcoes: ["Nadar", "Descansar na margem"]
+            },
+            {
+                texto: "Você escolheu o caminho da direita e avista uma caverna. A entrada parece sombria, mas há uma luz fraca dentro. Você entra?",
+                opcoes: ["Sim", "Não"]
+            },
+            {
+                texto: "Ao nadar, você encontra um objeto brilhante no fundo do lago. É um colar antigo! Você o leva com você. O que fazer a seguir?",
+                opcoes: ["Explorar o lago", "Sair do lago e seguir o caminho"]
+            },
+            {
+                texto: "Enquanto descansa, você ouve um som estranho vindo da floresta. Você se levanta e investiga. O que você encontra?",
+                opcoes: ["Seguir o som", "Ignorar e voltar para casa"]
+            },
+            {
+                texto: "Dentro da caverna, você encontra pinturas nas paredes e um tesouro escondido! O que você faz?",
+                opcoes: ["Pegar o tesouro", "Explorar mais a caverna"]
+            },
+            {
+                texto: "Você decidiu não entrar na caverna e voltar para o caminho. Ao voltar, você encontra uma trilha que leva a uma vila.",
+                opcoes: ["Ir para a vila", "Explorar mais a floresta"]
+            },
+            {
+                texto: "Você encontrou um tesouro incrível! Agora você é rico! O que você faz com sua nova fortuna?",
+                opcoes: ["Investir em uma aventura", "Compartilhar com a vila"]
+            },
+            {
+                texto: "Você decide explorar mais a caverna e descobre um mistério antigo. Você se torna um aventureiro renomado! Qual será sua próxima aventura?",
+                opcoes: ["Viajar pelo mundo", "Contar suas histórias"]
+            },
+            {
+                texto: "Ao seguir o som, você encontra um grupo de viajantes que te convidam para se juntar a eles. Uma nova aventura começa! Para onde você irá?",
+                opcoes: ["Viajar com eles", "Ficar e explorar a floresta"]
+            },
+            {
+                texto: "Você ignora o som e volta para casa, mas sempre se pergunta o que poderia ter acontecido. Você se torna um contador de histórias sobre suas aventuras passadas. Fim da história.",
+                opcoes: []
+            },
+            {
+                texto: "Você chega à vila e descobre que há muito a aprender e novas aventuras a viver. O que você gostaria de fazer na vila?",
+                opcoes: ["Treinar um novo talento", "Explorar a vila"]
+            },
+            {
+                texto: "Você decide explorar mais a floresta e encontra muitos segredos escondidos. Um novo mundo se abre para você. Fim da história.",
+                opcoes: []
+            }
+        ];
+
+        function mudarHistoria(opcao) {
+            if (etapa === 0) {
+                etapa = opcao === "Para a esquerda" ? 1 : 2;
+            } else if (etapa === 1) {
+                etapa = opcao === "Nadar" ? 3 : 4;
+            } else if (etapa === 2) {
+                etapa = opcao === "Sim" ? 5 : 6;
+            } else if (etapa === 3 || etapa === 4) {
+                etapa = 1; // Volta ao lago
+            } else if (etapa === 5) {
+                etapa = opcao === "Pegar o tesouro" ? 8 : 9;
+            } else if (etapa === 6) {
+                etapa = opcao === "Ir para a vila" ? 10 : 11;
+            } else if (etapa === 7) {
+                etapa = opcao === "Investir em uma aventura" ? 12 : 13;
+            } else if (etapa === 8) {
+                etapa = opcao === "Viajar pelo mundo" ? 14 : 15;
+            } else if (etapa === 9) {
+                etapa = opcao === "Viajar com eles" ? 16 : 17;
+            }
+            atualizarHistoria();
+        }
+
+        function atualizarHistoria() {
+            const historiaDiv = document.getElementById("historia");
+            historiaDiv.innerHTML = historias[etapa].texto;
+            const opcoesDiv = document.getElementById("opcoes");
+            opcoesDiv.innerHTML = "";
+            historias[etapa].opcoes.forEach(opcao => {
+                const botao = document.createElement("button");
+                botao.innerText = opcao;
+                botao.onclick = () => mudarHistoria(opcao);
+                opcoesDiv.appendChild(botao);
+            });
+        }
+
+        window.onload = atualizarHistoria;
+    </script>
+</head>
+<body>
+    <div class="tarja esquerda"></div>
+    <div class="tarja direita"></div>
+    <div id="historia"></div>
+    <div id="opcoes"></div>
+</body>
+</html>
