@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Rede Social Mobile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: black; /* Fundo externo preto */
+            color: #333;
+            display: flex;
+            justify-content: center;
+            height: 100vh; /* Limita a altura à tela do dispositivo */
+        }
+
+        .main-container {
+            background-color: #f3f2ef;
+            max-width: 430px; /* Largura máxima de uma tela de celular */
+            width: 100%;
+            margin: 0 auto;
+            min-height: 100vh; /* Ocupa a tela inteira */
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: #0077b5;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .search-bar {
+            flex-grow: 1;
+            margin-left: 10px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 20px;
+            border: none;
+            font-size: 14px;
+            box-sizing: border-box; /* Certifica que a largura inclui padding */
+        }
+
+        .container {
+            padding: 10px;
+            flex-grow: 1;
+            overflow-y: auto; /* Permite a rolagem na área de postagens */
+        }
+
+        .post {
+            background-color: white;
+            border-radius: 0;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            margin: 0; /* Remove espaçamento entre postagens e divisas */
+        }
+
+        .post h3 {
+            margin: 0 0 10px;
+            font-size: 16px;
+        }
+
+        .post p {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .post img {
+            max-width: 100%;
+            max-height: 200px;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
+
+        /* Linha divisória entre postagens */
+        .divider {
+            border-top: 1px solid black;
+            margin: 0; /* Conecta as postagens diretamente à divisa */
+        }
+
+        .create-post {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .create-post textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: none;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        .create-post input[type="file"] {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .create-post button {
+            background-color: #0077b5;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            align-self: flex-end; /* Alinha o botão à direita */
+        }
+
+        /* Rodapé fixo */
+        footer {
+            background-color: #0077b5;
+            color: white;
+            padding: 10px 0;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+            max-width: 430px;
+            text-align: center;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0px -1px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        footer .icon {
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Estilo para o botão de curtidas */
+        .like-button {
+            background-color: transparent;
+            border: none;
+            color: #0077b5;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .liked {
+            color: gray; /* Cor do botão após ser clicado */
+        }
+    </style>
+    <!-- Link para os ícones do FontAwesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="main-container">
+    <header>
+        <h1>Rede Social</h1>
+        <div class="search-bar">
+            <input type="text" placeholder="Pesquisar..." id="searchInput" oninput="filterPosts()">
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Criar nova postagem -->
+        <div class="create-post">
+            <textarea id="postText" rows="4" placeholder="Comece uma postagem..."></textarea>
+            <input type="file" id="imageInput" accept="image/*">
+            <button onclick="createPost()">Postar</button>
+        </div>
+
+        <!-- Área para exibir postagens -->
+        <div id="postContainer">
+            <!-- Postagens prontas com contagens de curtidas elevadas -->
+            <div class="post">
+                <h3>Maria Silva</h3>
+                <p>Adorei o novo layout desta rede social! Está muito intuitivo e fácil de usar.</p>
+                <img src="https://via.placeholder.com/400x200" alt="Imagem de exemplo">
+                <button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">123</span>)</button>
+            </div>
+            <div class="divider"></div>
+
+            <div class="post">
+                <h3>João Pereira</h3>
+                <p>Alguém viu a última atualização sobre tecnologia sustentável? Muito interessante!</p>
+                <button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">456</span>)</button>
+            </div>
+            <div class="divider"></div>
+
+            <div class="post">
+                <h3>Carla Souza</h3>
+                <p>Compartilhando uma foto do meu almoço hoje. Estava delicioso!</p>
+                <img src="https://via.placeholder.com/400x200" alt="Foto de almoço">
+                <button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">789</span>)</button>
+            </div>
+            <div class="divider"></div>
+
+            <div class="post">
+                <h3>Pedro Santos</h3>
+                <p>Hoje tive uma reunião produtiva com o time. Vamos em frente!</p>
+                <button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">245</span>)</button>
+            </div>
+            <div class="divider"></div>
+
+            <div class="post">
+                <h3>Fernanda Lima</h3>
+                <p>Estou amando as novas funcionalidades! Meus amigos estão se divertindo muito.</p>
+                <button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">580</span>)</button>
+            </div>
+            <div class="divider"></div>
+
+            <div class="post">
+                <h3>Lucas Oliveira</h3>
+                <p>Recentemente comecei a estudar programação. Alguma dica para iniciantes?</p>
+                <button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">320</span>)</button>
+            </div>
+            <div class="divider"></div>
+
+            <div class="post">
+                <h3>Julia Costa</h3>
+                <p>Não percam a exposição de arte local no próximo mês!</p>
+                <button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">900</span>)</button>
+            </div>
+            <div class="divider"></div>
+
+            <div class="post">
+                <h3>Ricardo Almeida</h3>
+                <p>Fiz uma trilha incrível no fim de semana. A natureza é maravilhosa!</p>
+                <img src="https://via.placeholder.com/400x200" alt="Trilha na natureza">
+                <button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">630</span>)</button>
+            </div>
+            <div class="divider"></div>
+
+            <div class="post">
+                <h3>Bianca Almeida</h3>
+                <p>Quem mais está ansioso para o lançamento do novo filme de ação?</p>
+                <button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">720</span>)</button>
+            </div>
+            <div class="divider"></div>
+
+            <div class="post">
+                <h3>André Santos</h3>
+                <p>Estou organizando um encontro de fãs de tecnologia. Quem quer participar?</p>
+                <button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">150</span>)</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <!-- Ícones no rodapé usando FontAwesome -->
+        <i class="fas fa-home icon"></i>
+        <i class="fas fa-search icon"></i>
+        <i class="fas fa-bell icon"></i>
+        <i class="fas fa-envelope icon"></i>
+        <i class="fas fa-cog icon"></i>
+    </footer>
+</div>
+
+<script>
+    // Função para criar nova postagem
+    function createPost() {
+        const postText = document.getElementById('postText').value;
+        const imageInput = document.getElementById('imageInput').files[0];
+        const postContainer = document.getElementById('postContainer');
+
+        // Verifica se o texto da postagem não está vazio
+        if (postText.trim() === '') {
+            alert('Por favor, escreva algo antes de postar!');
+            return;
+        }
+
+        // Criação do novo elemento de postagem
+        const newPost = document.createElement('div');
+        newPost.classList.add('post');
+
+        // Criação do conteúdo da postagem
+        const postContent = `
+            <h3>Você</h3>
+            <p>${postText}</p>
+        `;
+
+        // Adiciona o conteúdo à nova postagem
+        newPost.innerHTML = postContent;
+
+        // Se uma imagem foi selecionada, adiciona à postagem
+        if (imageInput) {
+            const imageUrl = URL.createObjectURL(imageInput);
+            const imgTag = `<img src="${imageUrl}" alt="Imagem da postagem">`;
+            newPost.innerHTML += imgTag;
+        }
+
+        // Adiciona o botão de curtir com contagem inicial
+        const initialLikes = 0; // Inicializa com 0 curtidas
+        newPost.innerHTML += `<button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">${initialLikes}</span>)</button>`;
+
+        // Adiciona a nova postagem ao container
+        postContainer.prepend(newPost);
+
+        // Limpa os campos de entrada
+        document.getElementById('postText').value = '';
+        document.getElementById('imageInput').value = '';
+    }
+
+    // Função para filtrar postagens
+    function filterPosts() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const posts = document.querySelectorAll('.post');
+
+        posts.forEach(post => {
+            const postText = post.querySelector('p').innerText.toLowerCase();
+            post.style.display = postText.includes(searchInput) ? '' : 'none';
+        });
+    }
+
+    // Função para curtir ou descurtir uma postagem
+    function likePost(button) {
+        const likeCountSpan = button.querySelector('.like-count');
+        const likeCount = parseInt(likeCountSpan.innerText);
+
+        // Verifica se a postagem já foi curtida
+        if (button.classList.contains('liked')) {
+            // Se já curtiu, remove a curtida
+            button.classList.remove('liked');
+            likeCountSpan.innerText = likeCount - 1; // Diminui a contagem de curtidas
+        } else {
+            // Se não curtiu, adiciona a curtida
+            button.classList.add('liked');
+            likeCountSpan.innerText = likeCount + 1; // Aumenta a contagem de curtidas
+        }
+    }
+</script>
+</body>
+</html>
