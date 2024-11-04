@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">                        
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">                  
+    <title>Rede Social</title>  
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: black; /* Fundo externo preto */
+            color: #333;
+            display: flex;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .main-container {
+            background-color: #f3f2ef;
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            min-height: 90vh;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .search-bar {
+            flex-grow: 1;
+            margin-left: 10px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 20px;
+            border: none;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            padding: 10px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .post {
+            background-color: white;
+            border-radius: 0;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            margin: 0;
+        }
+
+        .post h3 {
+            margin: 0 0 10px;
+            font-size: 16px;
+        }
+
+        .post p {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .divider {
+            border-top: 1px solid black;
+            margin: 0;
+        }
+
+        .create-post {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .create-post textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: none;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        .create-post button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            align-self: flex-end;
+        }
+
+        footer {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 0;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0px -1px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        footer .icon {
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .like-button {
+            background-color: transparent;
+            border: none;
+            color: #007BFF;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .liked {
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <header>
+        <h1>Rede Social</h1>
+        <div class="search-bar">
+            <input type="text" placeholder="Pesquisar..." id="searchInput" oninput="filterPosts()">
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="create-post">
+            <textarea id="postText" rows="4" placeholder="Comece uma postagem..."></textarea>
+            <button onclick="createPost()">Postar</button>
+        </div>
+
+        <div id="postContainer">
+            <div class="post">
+                <h3>Ana Costa</h3>
+                <p>Adorei o novo layout desta rede social! Está muito intuitivo e fácil de usar.</p>
+                <button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">78</span>)</button>
+            </div>
+            <div class="divider"></div>
+
+            <!-- Novas postagens adicionadas -->
+            <div class="post">
+                <h3>Pedro Almeida</h3>
+                <p>Hoje foi um dia incrível, consegui finalizar um projeto importante!</p>
+                <button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">34</span>)</button>
+            </div>
+            <div class="divider"></div>
+
+            <div class="post">
+                <h3>Beatriz Souza</h3>
+                <p>Alguém indica uma série para assistir no fim de semana?</p>
+                <button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">89</span>)</button>
+            </div>
+            <div class="divider"></div>
+
+            <div class="post">
+                <h3>Renato Silva</h3>
+                <p>Revisando minhas metas para o ano. Vamos ver o que ainda posso alcançar!</p>
+                <button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">112</span>)</button>
+            </div>
+            <div class="divider"></div>
+
+            <div class="post">
+                <h3>Carla Martins</h3>
+                <p>Visitando a família e aproveitando um bom tempo juntos.</p>
+                <button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">56</span>)</button>
+            </div>
+            <div class="divider"></div>
+
+            <div class="post">
+                <h3>André Pereira</h3>
+                <p>Estudando novas habilidades e focando no meu crescimento profissional.</p>
+                <button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">134</span>)</button>
+            </div>
+            <div class="divider"></div>
+
+            <!-- Exemplo de postagem anterior -->
+            <div class="post">
+                <h3>Gabriel Santos</h3>
+                <p>Descobri um novo restaurante na cidade, vale a pena conferir!</p>
+                <button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">50</span>)</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <i class="fas fa-home icon"></i>
+        <i class="fas fa-bell icon"></i>
+        <i class="fas fa-user icon"></i>
+    </footer>
+</div>
+
+<script>
+    function likePost(button) {
+        const count = button.querySelector(".like-count");
+        let likes = parseInt(count.textContent);
+        button.classList.toggle("liked");
+        count.textContent = button.classList.contains("liked") ? ++likes : --likes;
+    }
+
+    function createPost() {
+        const textArea = document.getElementById("postText");
+        const text = textArea.value.trim();
+        if (text) {
+            const postContainer = document.getElementById("postContainer");
+            const newPost = document.createElement("div");
+            newPost.classList.add("post");
+            newPost.innerHTML = `<h3>Usuário Anônimo</h3><p>${text}</p><button class="like-button" onclick="likePost(this)">Curtidas (<span class="like-count">0</span>)</button>`;
+            postContainer.insertBefore(newPost, postContainer.firstChild);
+            textArea.value = "";
+        }
+    }
+</script>
+
+</body>
+</html>
